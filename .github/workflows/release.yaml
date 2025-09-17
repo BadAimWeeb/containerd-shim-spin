@@ -76,12 +76,18 @@ jobs:
           for f in ./_artifacts/*/*-x86_64.tar.gz; do tar -xf $f --directory ./deployments/k3d/.tmp/linux/amd64; done
           for f in ./_artifacts/*/*-aarch64.tar.gz; do tar -xf $f --directory ./deployments/k3d/.tmp/linux/arm64; done
 
+      - name: Lowercase repository name & get commit SHA
+        env:
+          GITHUB_REPOSITORY: ${{ github.repository }}
+        run: |
+          echo "REPO_NAME=${GITHUB_REPOSITORY@L}" >> $GITHUB_ENV
+
       - name: Build and push k3d shim image
         uses: docker/build-push-action@v5
         with:
           push: true
           tags: |
-            ghcr.io/${{ github.repository }}/k3d:${{ env.RELEASE_VERSION }}
+            ghcr.io/${{ env.REPO_NAME }}/k3d:${{ env.RELEASE_VERSION }}
           context: deployments/k3d
           platforms: linux/amd64,linux/arm64
           build-args: |
