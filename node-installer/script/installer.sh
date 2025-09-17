@@ -115,7 +115,7 @@ if [ ! -f $NODE_ROOT$KWASM_DIR/active ]; then
     if $IS_MICROK8S; then
         nsenter -m/$NODE_ROOT/proc/1/ns/mnt -- systemctl restart snap.microk8s.daemon-containerd
     elif $IS_K3S; then
-        nsenter -m/$NODE_ROOT/proc/1/ns/mnt -- systemctl restart k3s
+        nsenter -m/$NODE_ROOT/proc/1/ns/mnt -- bash -c "systemctl restart k3s || systemctl restart k3s-agent"
     elif $IS_RKE2_AGENT; then
         nsenter --target 1 --mount --uts --ipc --net -- systemctl restart rke2-agent
     elif $IS_K0S_WORKER; then
