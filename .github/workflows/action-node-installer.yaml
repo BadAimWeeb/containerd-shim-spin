@@ -144,12 +144,18 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Lowercase repository name & get commit SHA
+        env:
+          GITHUB_REPOSITORY: ${{ github.repository }}
+        run: |
+          echo "REPO_NAME=${GITHUB_REPOSITORY@L}" >> $GITHUB_ENV
+
       - name: Build and push node-installer image
         uses: docker/build-push-action@v5
         with:
           push: true
           tags: |
-            ghcr.io/${{ github.repository }}/node-installer:${{ needs.build-and-test.outputs.release_version }}
+            ghcr.io/${{ env.REPO_NAME }}/spin-node-installer:${{ needs.build-and-test.outputs.release_version }}
           context: node-installer
           platforms: linux/amd64,linux/arm64
 
