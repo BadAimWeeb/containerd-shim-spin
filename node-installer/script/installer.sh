@@ -89,7 +89,7 @@ fi
 # Configure Spin runtime options if using systemd cgroups and no options are configured
 # TODO: this should allow for some options to already be configured and just additively 
 # configure SystemdCgroup
-if ! grep -q 'runtimes.spin.options' $NODE_ROOT$CONTAINERD_CONF && [ "$SYSTEMD_CGROUP" = "true" ]; then
+if ! $IS_K3S && ! grep -q 'runtimes.spin.options' $NODE_ROOT$CONTAINERD_CONF && [ "$SYSTEMD_CGROUP" = "true" ]; then
     echo "Setting SystemdCgroup to $SYSTEMD_CGROUP in Spin containerd configuration"
     if grep -q "version = 3" $NODE_ROOT$CONTAINERD_CONF; then
         echo '
@@ -102,10 +102,6 @@ if ! grep -q 'runtimes.spin.options' $NODE_ROOT$CONTAINERD_CONF && [ "$SYSTEMD_C
     SystemdCgroup = '$SYSTEMD_CGROUP'
 ' >> $NODE_ROOT$CONTAINERD_CONF
     fi
-fi
-
-if $IS_K3S; then
-    sed -i "s|runtime_type = \"io.containerd.spin.*\"|runtime_type = \"$KWASM_DIR/bin/containerd-shim-spin-v2\"|g" $NODE_ROOT$CONTAINERD_CONF
 fi
 
 if [ ! -f $NODE_ROOT$KWASM_DIR/active ]; then
