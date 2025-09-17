@@ -9,11 +9,6 @@ jobs:
   build:
     uses: ./.github/workflows/action-build.yaml
 
-  build-and-push-wasm-images:
-    uses: ./.github/workflows/action-docker-build-push.yaml
-    with:
-      test: false
-
   publish-node-installer-image:
     uses: ./.github/workflows/action-node-installer.yaml
     needs: build
